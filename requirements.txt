@@ -1,0 +1,7 @@
+langchain==0.1.11
+python-dotenv==1.0.1
+requests==2.28.1
+google-generativeai
+langchain_google_genai
+azure-search-documents 
+azure-core 
