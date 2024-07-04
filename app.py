@@ -1,4 +1,6 @@
 import os
+import json
+import requests
 from dotenv import load_dotenv, find_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import ChatPromptTemplate
@@ -54,7 +56,7 @@ def azure_ai_search(query):
     """
     try:
         results = search_client.search(search_text=query)
-        return [result['content'] for result in results]
+        return [result['merged_content'] for result in results]
     except Exception as e:
         print(f"Erro ao buscar no Azure AI Search: {e}")
         return []
@@ -110,19 +112,19 @@ def retrieve_and_generate(query):
         str: The generated response from the LLM.
     """
     # Get synonyms for the query
-    result_synonyms = synonyms_chain.invoke(f'{query}')
+    result_synonyms = synonyms_chain.invoke(f'{query['content']}')
     synonyms = result_synonyms["output"]
     print("Sinônimos gerados: ", synonyms)
    
     # Search Azure AI with synonyms
-    context = azure_ai_search(synonyms + query)
+    context = azure_ai_search(synonyms + query['content'])
     if not context:
         return "Nenhum resultado encontrado."
    
     # Combine context and query to generate the response
     combined_prompt = f"""
     <Contexto>
-    {context}
+    {context} 
     </Contexto>
     ---------
     <Questão>
@@ -130,19 +132,20 @@ def retrieve_and_generate(query):
     </Questão>
     ------------------------------------------------------------------
     Quero que você atue como um analista de documentos de uma empresa.
-    Você deve fazer analizar o <Contexto> e fazer um resumo direcionado a questão <Questão>
+    Você deve fazer a analise do <Contexto> e fazer um resumo do arquivo correspondente a questão <Questão>
     --------
     Exemplo:
     <Contexto>
+        Exemplo
     </Contexto>
     <Questão>
         Qual metodologia é usada?
     </Questão>
     <Resposta>
-        Análise Documental como uma
-        metodologia de investigação científica que adota determinados procedimentos técnicos e
-        científicos com o intuito de examinar e compreender o teor de documentos dos mais
-        variados tipos, e deles, obter as mais significativas informações, conforme o problema de
+        Análise Documental como uma 
+        metodologia de investigação científica que adota determinados procedimentos técnicos e 
+        científicos com o intuito de examinar e compreender o teor de documentos dos mais 
+        variados tipos, e deles, obter as mais significativas informações, conforme o problema de 
         pesquisa estabelecido.
     </Resposta>
     -----------------------------------------------------------------------------------------------------------------------
@@ -182,16 +185,3 @@ conversation_chain = ConversationChain(
     memory=memory
 )
  
-def main():
-    """
-    Main function to handle user input and generate a response using the integrated search and LLM.
-    """
-    while True:
-        prompt = input("Pesquise nos arquivos: ")
-        if prompt.lower() in ['sair', 'exit', 'quit']:
-            break
-        response = retrieve_and_generate(prompt)
-        print("Chatbot: ", response)
- 
-if __name__ == "__main__":
-    main()
