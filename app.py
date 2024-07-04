@@ -110,12 +110,12 @@ def retrieve_and_generate(query):
         str: The generated response from the LLM.
     """
     # Get synonyms for the query
-    result_synonyms = synonyms_chain.invoke(f'{query}')
+    result_synonyms = synonyms_chain.invoke(f'{query['content']}')
     synonyms = result_synonyms["output"]
     print("Sinônimos gerados: ", synonyms)
    
     # Search Azure AI with synonyms
-    context = azure_ai_search(synonyms + query)
+    context = azure_ai_search(synonyms + query['content'])
     if not context:
         return "Nenhum resultado encontrado."
    
@@ -182,16 +182,3 @@ conversation_chain = ConversationChain(
     memory=memory
 )
  
-def main():
-    """
-    Main function to handle user input and generate a response using the integrated search and LLM.
-    """
-    while True:
-        prompt = input("Pesquise nos arquivos: ")
-        if prompt.lower() in ['sair', 'exit', 'quit']:
-            break
-        response = retrieve_and_generate(prompt)
-        print("Chatbot: ", response)
- 
-if __name__ == "__main__":
-    main()
