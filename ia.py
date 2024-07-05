@@ -15,7 +15,7 @@ from langchain.chains import ConversationChain
 if not find_dotenv():
     raise Exception("Arquivo .env não encontrado.")
 load_dotenv()
-set_debug(True)
+# set_debug(True)
  
 # Constants for environment variables
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -56,7 +56,31 @@ def azure_ai_search(query):
     """
     try:
         results = search_client.search(search_text=query)
-        return [result['merged_content'] for result in results]
+        results_list = list(results)
+        for result in results_list:
+            print("\n")
+            print("\n")
+            print("\n")
+            print("\n")
+            print("\n")
+            print("\n")
+            print("\n")
+            print("\n")
+            print("\n")
+            print("\n")
+            print("\n")
+            print(result['@search.score'] )
+
+            
+        if len(results_list) <= 1:
+            return [result['merged_content'] for result in results_list]
+        
+        if len(results_list) > 1:
+            filtered_contents = [result['merged_content'] for result in results_list if result['@search.score'] > 5]
+            if filtered_contents:
+                print(filtered_contents)
+                return filtered_contents
+
     except Exception as e:
         print(f"Erro ao buscar no Azure AI Search: {e}")
         return []
