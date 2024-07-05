@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, make_response, request
-import ia
+from flask_cors import CORS
 from contentsafety import analyze_text
-api = Flask(__name__)
+import ia
 
+api = Flask(__name__)
+CORS(api)
 
 @api.route('/api/procurar', methods=['POST'])
 def search():  
@@ -13,7 +15,7 @@ def search():
         return make_response(jsonify({'ChatBot': response}), 200)
     else:
         response = ia.retrieve_and_generate(data)
-        return make_response(jsonify({'ChatBot': "Sua mensagem contem conteúdo violento. Por favor mude sua mensagem."}), 400)
+        return make_response(jsonify({'ChatBot': "Sua mensagem contem conteúdo violento. Por favor mude sua mensagem."}), 200)
 
 if __name__ == '__main__':
     api.run(debug=True)
