@@ -12,10 +12,12 @@ body{
 .container-fluid a{
     
     color: white;
+    margin-left: 2%;
 }
 
 .fonte_orbitron{
     font-family: 'Orbitron', sans-serif;
+    text-align: center;
 }
 
 .navbar{
@@ -68,7 +70,7 @@ body{
 
 .prompt{
     background-color: #3967be;
-    height: 18%;
+    height: 13%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -78,11 +80,12 @@ body{
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .prompt input{
     width: 80%;
-    height: 50%;
+    height: 10%;
     border-radius: 10px;
     border: 1px solid #3967be;
     padding: 10px;

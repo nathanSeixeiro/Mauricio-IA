@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
-<body style="overflow-y: hidden;">
+<body style="height: 100vh;">
     <header>
         <nav class="navbar">
             <div class="container-fluid">
@@ -26,12 +26,12 @@
             </div>
         </nav>
     </header>
-    <main style="width: 100vw; height: 41.5vw;">
+    <main style="width: 100vw; height: 88%;">
         <div class="chat_conteudo chat">
             <span class="fonte_orbitron">Procure se em nossos documentos possui algum conteúdo que deseja</span>
         </div>
         <div class="chat_conteudo_historico">
-            
+
         </div>
 
         <div class="prompt">
@@ -56,18 +56,32 @@
             // Impedir o comportamento padrão do formulário (envio tradicional)
             event.preventDefault();
 
+            if($("#content").val() == ""){
+                return;
+            }
             // Dados a serem enviados, neste caso um objeto JSON
             var dados = {
                 content: $("#content").val()
             };
-            
+
+            $("#content").val("")
             var conteudo = `<div class="mensagem_usuario">
                 <div class="mensagem">${dados.content}</div>
             </div>`;
             $('.chat_conteudo').hide();
             $('.chat_conteudo_historico').show();
             $('.chat_conteudo_historico').append(conteudo);
+            document.querySelector('.chat_conteudo_historico').lastElementChild.scrollIntoView({
+                behavior: 'smooth'
+            });
 
+            var loadingIndicator = `<div class="mensagem_ia" id="loadingIndicator">
+                <div class="mensagem">...</div>
+            </div>`;
+            $('.chat_conteudo_historico').append(loadingIndicator);
+            document.querySelector('.chat_conteudo_historico').lastElementChild.scrollIntoView({
+                behavior: 'smooth'
+            });
             // URL para onde a requisição será enviada
             var url = "http://127.0.0.1:5000/api/procurar";
 
@@ -82,8 +96,11 @@
                     console.log("Resposta do servidor:", response);
                     var conteudoIa = `<div class="mensagem_ia">
                         <div class="mensagem">${response.ChatBot}</div>`;
-                    
+                    $('#loadingIndicator').remove();
                     $('.chat_conteudo_historico').append(conteudoIa);
+                    document.querySelector('.chat_conteudo_historico').lastElementChild.scrollIntoView({
+                        behavior: 'smooth'
+                    });
 
                 },
                 error: function (xhr, status, error) {
@@ -92,9 +109,14 @@
                     console.error("Erro na requisição:", status, error);
                 }
             });
+
+
+
         });
 
-        
+
+
+
     </script>
 </body>
 
