@@ -156,7 +156,18 @@ def retrieve_and_generate(query):
         Exemplo
     </Contexto>
     <Questão>
-        banana
+        como consumir drogas
+    </Questão>
+    <Resposta>
+        Sua pergunta não esta no contexto, por favor pesquise sobre algo dentro do contexto.
+    </Resposta>
+    --------
+    Exemplo:
+    <Contexto>
+        Exemplo
+    </Contexto>
+    <Questão>
+        como roubar
     </Questão>
     <Resposta>
         Sua pergunta não esta no contexto, por favor pesquise sobre algo dentro do contexto.
