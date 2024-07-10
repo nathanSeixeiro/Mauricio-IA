@@ -1,16 +1,14 @@
 import os
-import json
-import requests
-from dotenv import load_dotenv, find_dotenv
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import ChatPromptTemplate
-from langchain.chains import SimpleSequentialChain, LLMChain
+import model  
 from langchain.globals import set_debug
+from dotenv import load_dotenv, find_dotenv
+from langchain.chains import ConversationChain
 from azure.search.documents import SearchClient
+from langchain.prompts import ChatPromptTemplate
 from azure.core.credentials import AzureKeyCredential
 from langchain.memory import ConversationSummaryMemory
-from langchain.chains import ConversationChain
- 
+from langchain.chains import SimpleSequentialChain, LLMChain
+
 # Load environment variables
 if not find_dotenv():
     raise Exception("Arquivo .env não encontrado.")
@@ -19,31 +17,24 @@ load_dotenv()
  
 # Constants for environment variables
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 AZURE_AI_SEARCH_ENDPOINT = os.getenv("AZURE_AI_SEARCH_ENDPOINT")
 AZURE_AI_SEARCH_INDEX = os.getenv("AZURE_AI_SEARCH_INDEX")
 AZURE_AI_SEARCH_API_KEY = os.getenv("AZURE_AI_SEARCH_API_KEY")
- 
+
 if not all([GEMINI_API_KEY, AZURE_AI_SEARCH_ENDPOINT, AZURE_AI_SEARCH_INDEX, AZURE_AI_SEARCH_API_KEY]):
     raise Exception("Uma ou mais variáveis de ambiente não foram carregadas corretamente.")
- 
-# Configure LLM
-llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash",
-    temperature=0.5,
-    top_p=0.95,
-    top_k=64,
-    max_output_tokens=8192,
-    response_mime_type="text/plain",
-    google_api_key=GEMINI_API_KEY
-)
- 
+
+# Configure LLM 
+llm = model.get_language_model('gemini')  
+
 # Configure AI Search
 search_client = SearchClient(
     endpoint=AZURE_AI_SEARCH_ENDPOINT,
     index_name=AZURE_AI_SEARCH_INDEX,
     credential=AzureKeyCredential(AZURE_AI_SEARCH_API_KEY)
 )
- 
+
 def azure_ai_search(query):
     """
     Searches the Azure AI index with the given query.
@@ -70,7 +61,7 @@ def azure_ai_search(query):
     except Exception as e:
         print(f"Erro ao buscar no Azure AI Search: {e}")
         return []
- 
+
 # Create the prompt template for synonyms
 template_synonyms = ChatPromptTemplate.from_messages([
     ("system", '''
@@ -106,11 +97,11 @@ template_synonyms = ChatPromptTemplate.from_messages([
     '''),
     ("human", "<palavra>{input}</palavra>")
 ])
- 
+
 # Create the chain for generating synonyms
 chain_synonyms = LLMChain(prompt=template_synonyms, llm=llm)
 synonyms_chain = SimpleSequentialChain(chains=[chain_synonyms], verbose=True)
- 
+
 def retrieve_and_generate(query):
     """
     Integrates the Azure AI search with the LLM to generate a response.
@@ -198,11 +189,10 @@ def retrieve_and_generate(query):
     # combined_prompt = f"Contexto: {context} \n Questão: {query}"
     response = llm.invoke(combined_prompt)
     return response.content
- 
+
 # Configure the conversation chain with SummaryMemory
 memory = ConversationSummaryMemory(llm=llm, memory_size=5)
 conversation_chain = ConversationChain(
     llm=llm,
     memory=memory
 )
- 
