@@ -1,17 +1,22 @@
 # Documento Descritivo para Prova de Conceito (POC) - Utilizando Inteligência Artificial
 
 ## Nome dos Integrantes:
-- Lucas da Silva de Souza
+- Lucas da Silva de Sousa
 - Nathan Victor Rodrigues Seixeiro
 - Rafael Santos Neves
 
 ## Atividade de Cada Integrante:
-- **Lucas da Silva de Souza:** Implementou todo o sistema em uma aplicação web, realizando o frontend e o backend e auxiliando no filtro de conteúdo para retornar dados mais precisos da IA.
+- **Lucas da Silva de Sousa:** Implementou todo o sistema em uma aplicação web, realizando o frontend e o backend e auxiliando no filtro de conteúdo para retornar dados mais precisos da IA.
 - **Nathan Victor Rodrigues Seixeiro:** Desenvolveu a integração com a API do ChatGoogleGenerativeAI e OpenAI no LangChain, configurou o Azure AI Search e desenvolveu a função de busca no Azure, a memória de conversação e a cadeia de conversação a partir de sumário. Também cuidou da documentação e organização dos passos.
 - **Rafael Santos Neves:** Desenvolveu a lógica de sinônimos, implementação do LangChain, auxiliou na criação do serviço do Azure AI Search, treinou e melhorou a assertividade dos resultados com técnicas de engenharia de prompt e dos testes de assertividade e aprimorou os resultados esperados com Azure Content Safety. 
 
 ## Descrição da Aplicação:
 A aplicação desenvolvida é um chatbot inteligente que combina a busca em um índice de inteligência artificial da Azure com a geração de respostas utilizando modelos de linguagem, inicialmente da Google Generative AI (usando o modelo Gemini-1.5-flash). A principal funcionalidade da aplicação é permitir a busca de informações relevantes em documentos armazenados na Azure e, em seguida, gerar respostas contextualizadas utilizando IA avançada.
+Os documentos colocados na Azure foram:
+1. **Documento projeto Ação Esportiva SESI/SENAI**
+2. **Edital cursos técnicos SENAI**
+3. **Identidade Visual SENAI**
+4. **Termos e Condições de uso SENAI**
 
 ### Problema que Resolve:
 A aplicação resolve o problema de encontrar e sintetizar informações de grandes volumes de dados textuais, facilitando a obtenção de respostas rápidas e precisas a partir de documentos armazenados.
