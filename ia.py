@@ -57,20 +57,6 @@ def azure_ai_search(query):
     try:
         results = search_client.search(search_text=query)
         results_list = list(results)
-        # for result in results_list:
-        #     print("\n")
-        #     print("\n")
-        #     print("\n")
-        #     print("\n")
-        #     print("\n")
-        #     print("\n")
-        #     print("\n")
-        #     print("\n")
-        #     print("\n")
-        #     print("\n")
-        #     print("\n")
-        #     print(result['@search.score'] )
-
             
         if len(results_list) <= 1:
             return [result['merged_content'] for result in results_list]
