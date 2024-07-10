@@ -50,15 +50,23 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+        var isSubmitting = false;
         var url = "http://127.0.0.1:5000/api/procurar"; // URL do servidor
         $('.chat_conteudo_historico').hide();
         $("#chat").submit(function (event) {
             // Impedir o comportamento padrão do formulário (envio tradicional)
             event.preventDefault();
 
-            if($("#content").val() == ""){
+            if (isSubmitting) {
                 return;
             }
+
+            if ($("#content").val() == "") {
+                return;
+            }
+
+            isSubmitting = true;
+
             // Dados a serem enviados, neste caso um objeto JSON
             var dados = {
                 content: $("#content").val()
@@ -101,12 +109,13 @@
                     document.querySelector('.chat_conteudo_historico').lastElementChild.scrollIntoView({
                         behavior: 'smooth'
                     });
-
+                    isSubmitting = false;
                 },
                 error: function (xhr, status, error) {
                     // Função chamada em caso de erro na requisição
                     debugger
                     console.error("Erro na requisição:", status, error);
+                    isSubmitting = false;
                 }
             });
 
